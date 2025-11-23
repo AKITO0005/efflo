@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>efflo. - Wear Your Emotions.</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Shippori+Mincho:wght@700&display=swap');
+
+    :root {
+      --c-bg: #F9F7F2; /* Milky Cream */
+      --c-text: #1A1A2E; /* Ink Black */
+      --c-accent: #304FFE; /* Electric Blue */
+      --c-pink: #FF2E93; /* Hyper Pink */
+      --c-card: #ffffff;
+    }
+
+    body {
+      font-family: 'Outfit', 'Zen Kaku Gothic New', sans-serif;
+      background-color: var(--c-bg);
+      color: var(--c-text);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* Header / Logo */
+    header {
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+      background: rgba(249, 247, 242, 0.9);
+
+      backdrop-filter: blur(10px);
+      box-sizing: border-box;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--c-text);
+      transition: transform 0.3s ease;
+    }
+    
+    .logo:hover {
+      transform: scale(1.05);
+    }
+    
+    .logo-dot { color: var(--c-pink); }
+
+    /* Hamburger Menu */
+    .hamburger {
+      cursor: pointer;
+      z-index: 200;
+      width: 30px;
+      height: 20px;
+      position: relative;
+    }
+
+    .hamburger span {
+      display: block;
+      position: absolute;
+      height: 3px;
+      width: 100%;
+      background: var(--c-accent); /* 青色指定 */
+      border-radius: 9px;
+      opacity: 1;
+      left: 0;
+      transform: rotate(0deg);
+      transition: .25s ease-in-out;
+    }
+
+    .hamburger span:nth-child(1) { top: 0px; }
+    .hamburger span:nth-child(2) { top: 9px; }
+    .hamburger span:nth-child(3) { top: 18px; }
+
+    .hamburger.open span:nth-child(1) {
+      top: 9px;
+      transform: rotate(135deg);
+    }
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+      left: -60px;
+    }
+    .hamburger.open span:nth-child(3) {
+      top: 9px;
+      transform: rotate(-135deg);
+    }
+
+    /* Mobile Menu Overlay */
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%; 
+      height: 100vh;
+      background: var(--c-bg);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    .menu-overlay.open {
+      right: 0;
+    }
+
+    .menu-link {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--c-accent);
+      text-decoration: none;
+      margin: 20px 0;
+      transition: color 0.3s;
+    }
+    
+    .menu-link:hover {
+      color: var(--c-pink);
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 120px 20px 60px;
+      position: relative;
+    }
+
+    .copy-container {
+      margin-bottom: 60px;
+      opacity: 0;
+      animation: fadeInUp 1s ease 0.5s forwards;
+    }
+
+    .main-copy {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-weight: 900;
+      font-size: 4rem;
+      color: var(--c-accent);
+      line-height: 1.3;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+    
+    .sub-copy {
+      font-size: 1.2rem;
+      color: var(--c-text);
+      font-weight: 700;
+      opacity: 0.7;
+      letter-spacing: 0.1em;
+      margin-bottom: 40px;
+    }
+
+    /* メインの診断ボタン */
+    .hero-check-btn {
+      display: inline-block;
+      padding: 15px 40px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(45deg, var(--c-accent), var(--c-pink));
+      border-radius: 99px;
+      text-decoration: none;
+      box-shadow: 0 10px 20px rgba(48, 79, 254, 0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+      opacity: 0;
+      animation: fadeInUp 1s ease 0.8s forwards; /* 遅れて表示 */
+    }
+
+    .hero-check-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(48, 79, 254, 0.3);
+    }
+
+    /* Icons Grid */
+    .icons-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 120px;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .icon-item:hover {
+      transform: translateY(-10px) scale(1.05);
+    }
+
+    .icon-img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
+      margin-bottom: 15px;
+    }
+
+    /* アイコン下の診断ボタン風ラベル */
+    .check-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--c-accent);
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid var(--c-accent);
+      padding: 6px 16px;
+      border-radius: 20px;
+      transition: all 0.3s;
+      letter-spacing: 0.05em;
+    }
+
+    .icon-item:hover .check-label {
+      background: var(--c-accent);
+      color: #fff;
+    }
+
+    /* Modal (Detail Popup) */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(5px);
+      z-index: 300;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-card {
+      background: var(--c-card);
+      width: 90%;
+      max-width: 400px;
+      border-radius: 24px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #999;
+      transition: color 0.2s;
+    }
+    .close-btn:hover { color: var(--c-text); }
+
+    .modal-img {
+      width: 180px;
+      height: 180px;
+      object-fit: contain;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 15px 30px rgba(0,0,0,0.2));
+    }
+
+    .modal-title {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1;
+      margin: 0;
+      background: linear-gradient(45deg, var(--c-accent), var(--c-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .modal-jp {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--c-text);
+      margin-bottom: 20px;
+    }
+
+    .modal-desc {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: #555;
+      white-space: pre-wrap;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .main-copy { font-size: 2.5rem; }
+      .icons-grid { gap: 20px; }
+      .icon-item { width: 100px; }
+      .icon-img { width: 80px; height: 80px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo" onclick="location.reload()">efflo<span class="logo-dot">.</span></div>
+    
+    <!-- Hamburger Icon -->
+    <div class="hamburger" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </header>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="menu-overlay" id="menu-overlay">
+    <a href="#" class="menu-link" onclick="closeMenu(); location.reload();">TOP</a>
+    <a href="efflo_diagnosis_final.html" class="menu-link">CHECK MODE</a>
+    <a href="#" class="menu-link" onclick="closeMenu()">ABOUT</a>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="copy-container">
+      <div class="main-copy">感情は、<br>着飾る時代だ。</div>
+      <div class="sub-copy">Wear Your Emotions.</div>
+      <!-- メインの診断ボタン -->
+      <a href="efflo_diagnosis_final.html" class="hero-check-btn">CHECK MODE</a>
+    </div>
+
+    <!-- Icons Grid (Dynamic Generation) -->
+    <div class="icons-grid" id="icons-container">
+      <!-- JSでアイコンを生成 -->
+    </div>
+  </section>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="close-btn" onclick="closeModal()">×</div>
+      <img id="m-img" src="" class="modal-img">
+      <h2 id="m-title" class="modal-title">HYPE</h2>
+      <div id="m-jp" class="modal-jp">積極</div>
+      <p id="m-desc" class="modal-desc">解説文</p>
+    </div>
+  </div>
+
+  <script>
+    /* 感情データ */
+    const emotions = [
+      { id: "HYPE", jp: "積極", image: "efflo-01.png", desc: "エネルギーが溢れ、周囲を巻き込むポジティブな状態。\nリーダーシップを発揮できるタイミング。" },
+      { id: "FLOW", jp: "集中", image: "efflo-02.png", desc: "一点に深く没入している状態。\n高い生産性を発揮するが、話しかけられたくないかも。" },
+      { id: "LIKE", jp: "共感", image: "efflo-03.png", desc: "他者の意見を受け入れ、感動している状態。\n素晴らしい聞き手になれる。" },
+      { id: "SPARK", jp: "驚き", image: "efflo-04.png", desc: "新しい発見やアイデアに衝撃を受けている状態。\nパラダイムシフトの瞬間。" },
+      { id: "EDGE", jp: "緊張", image: "efflo-05.png", desc: "プレッシャーを感じているが、やる気はある崖っぷちの状態。\n良いパフォーマンスの予兆。" },
+      { id: "MELT", jp: "消耗", image: "efflo-06.png", desc: "エネルギーが枯渇し、思考が溶け出している状態。\n休息か、単純作業が必要。" },
+      { id: "ERROR", jp: "不調", image: "efflo-07.png", desc: "意欲はあるが、状況が整理できずフリーズしている状態。\n情報の整理が必要。" }
+    ];
+
+    const container = document.getElementById('icons-container');
+
+    // アイコンを生成してアニメーション表示
+    emotions.forEach((emo, index) => {
+      const div = document.createElement('div');
+      div.className = 'icon-item';
+      
+      // アイコン + 診断ボタン（詳細表示）
+      div.innerHTML = `
+        <img src="${emo.image}" alt="${emo.id}" class="icon-img">
+        <div class="check-label">CHECK</div>
+      `;
+      
+      // クリックイベント
+      div.onclick = () => openModal(emo);
+
+      container.appendChild(div);
+
+      // じわじわ表示するアニメーション (Staggered Animation)
+      // 遅延時間: キャッチコピー表示(1.5s) + インデックス * 0.15s
+      setTimeout(() => {
+        div.style.opacity = '1';
+        div.style.transform = 'translateY(0)';
+      }, 1500 + (index * 150));
+    });
+
+    // モーダル制御
+    const modal = document.getElementById('modal');
+    const modalCard = modal.querySelector('.modal-card');
+
+    function openModal(emo) {
+      document.getElementById('m-img').src = emo.image;
+      document.getElementById('m-title').innerText = emo.id;
+      document.getElementById('m-jp').innerText = emo.jp;
+      document.getElementById('m-desc').innerText = emo.desc;
+
+      modal.style.display = 'flex';
+      // 少し遅らせてフェードイン
+      setTimeout(() => {
+        modal.style.opacity = '1';
+        modalCard.style.transform = 'scale(1)';
+      }, 10);
+    }
+
+    function closeModal() {
+      modal.style.opacity = '0';
+      modalCard.style.transform = 'scale(0.9)';
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
+    }
+
+    // 背景クリックで閉じる
+    modal.onclick = closeModal;
+
+    // ハンバーガーメニュー制御
+    function toggleMenu() {
+      const burger = document.querySelector('.hamburger');
+      const menu = document.getElementById('menu-overlay');
+      burger.classList.toggle('open');
+      menu.classList.toggle('open');
+    }
+
+    function closeMenu() {
+      const burger = document.querySelector('.hamburger');
+      const menu = document.getElementById('menu-overlay');
+      burger.classList.remove('open');
+      menu.classList.remove('open');
+    }
+
+  </script>
+</body>
+</html>
